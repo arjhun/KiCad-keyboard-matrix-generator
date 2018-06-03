@@ -11,19 +11,19 @@ import time
 import sys
 import os
 
-tm = int(time.time())
+GUID_SEED = int(time.time())
 
 def createId():
-    global tm
-    id = format(int(tm),'x')
-    tm += 1
-    return id
+    global GUID_SEED
+    guid = format(int(GUID_SEED),'x')
+    GUID_SEED += 1
+    return guid
 
-def component(type, value, ref, timestamp, xPos, yPos, mirrorH = False):
+def component(type, value, ref, guid, xPos, yPos, mirrorH = False):
 
     comp = '$Comp\n'
     comp += 'L {} {}?\n'.format(type, ref)
-    comp += 'U 1 1 {}\n'.format(timestamp)
+    comp += 'U 1 1 {}\n'.format(guid)
     comp += 'P {} {}\n'.format(xPos, yPos)
     comp += 'F 0 "{}?" H {} {} 50  0 000 L CNN\n'.format(ref, xPos+10, yPos+200)
     comp += 'F 1 "{}" H {} {} 50  0 000 C CNN\n'.format(value, xPos, yPos-100)
@@ -48,7 +48,7 @@ def connection(posX, posY):
     return 'Connection ~ {} {}\n'.format(posX, posY)
 
 def create_key_matrix(numRows, numCols, startX, startY, title = "Key Matrix", rowId = 'R', colId = 'C', revDiode = False):
-    #create a hex ecoded string as timestamp id
+    #create a hex ecoded string as id
     #loop through rows
     matrix = []
     blockHeight = 500
