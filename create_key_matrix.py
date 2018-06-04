@@ -11,7 +11,9 @@ import sys
 import os
 import eeschema_common as eeschema
 
-def create_key_matrix(numRows, numCols, startX, startY, title = "Key Matrix", rowId = 'R', colId = 'C', revDiode = False):
+__version__ = '0.1'
+
+def create_key_matrix(args):
     #create a hex ecoded string as id
     #loop through rows
     matrix = []
@@ -21,22 +23,22 @@ def create_key_matrix(numRows, numCols, startX, startY, title = "Key Matrix", ro
     diodeWidth = 300
     gap = 50
 
-    for row in range(numRows):
+    for row in range(args.numRows):
 
-        posY = startY+(blockHeight*row)
-        rowLabelX = startX
+        posY = args.yPos+(blockHeight*row)
+        rowLabelX = args.xPos
         rowLabelY = posY
-        matrix +=  eeschema.label(rowId+str(row), rowLabelX , rowLabelY, 0, 'Output')
+        matrix +=  eeschema.label(args.rowLabel+str(row), rowLabelX , rowLabelY, 0, 'Output')
         posY+=blockHeight/2
 
-        for col in range(numCols):
+        for col in range(args.numCols):
             posX = labelConnectionWidth + ((switchWidth+diodeWidth+gap)*col)
             blockRs = posX+switchWidth+diodeWidth
             switchX = posX + switchWidth/2
             diodeX = switchX + switchWidth/2 + diodeWidth/2
             #place components
-            matrix += eeschema.component('SW_Push', 'KEY', 'SW', eeschema.createId(), switchX, posY)
-            matrix += eeschema.component('D', 'Diode', 'D', eeschema.createId(), diodeX, posY, revDiode)
+            matrix += eeschema.component('SW_Push', 'KEY', 'SW', eeschema.createId(), switchX, posY, args.sFootprint)
+            matrix += eeschema.component('D', 'Diode', 'D', eeschema.createId(), diodeX, posY, args.dFootprint, args.revDiode)
             #switch left side wire and junction
             matrix += eeschema.connection(posX, rowLabelY)
             matrix += eeschema.wire(posX,rowLabelY,posX, posY)
@@ -44,11 +46,11 @@ def create_key_matrix(numRows, numCols, startX, startY, title = "Key Matrix", ro
             if row > 0 :
                 matrix += eeschema.connection(blockRs, posY)
             #last row operations
-            if row == numRows-1 :
+            if row == args.numRows-1 :
                 colLabelY = posY+labelConnectionWidth
-                matrix += eeschema.label(colId+str(col), blockRs, colLabelY, 3)
-                matrix += eeschema.wire(blockRs,startY+blockHeight/2,blockRs,colLabelY)
-                matrix += eeschema.textBlock('{} {}x{}'.format(title,numRows,numCols),startX,startY-100)
+                matrix += eeschema.label(args.colLabel+str(col), blockRs, colLabelY, 3)
+                matrix += eeschema.wire(blockRs,args.yPos+blockHeight/2,blockRs,colLabelY)
+                matrix += eeschema.textBlock('{} {}x{}'.format(args.title,args.numRows,args.numCols),args.xPos,args.yPos-100)
 
         matrix += eeschema.wire(rowLabelX,rowLabelY,posX,rowLabelY)
 
@@ -65,12 +67,14 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--title', type=str, help='Title label for the matrix', default="Key Matrix")
     parser.add_argument('-rl', '--rowLabel', type=str, help='Row label prefix', default="row")
     parser.add_argument('-cl', '--colLabel', type=str, help='Row label prefix', default="col")
+    parser.add_argument('-df', '--dFootprint', type=str, help='Diode footprint association', default="")
+    parser.add_argument('-sf', '--sFootprint', type=str, help='Switch footprint association', default="")
     parser.add_argument('-rd','--revDiode', help='Reverse diode direction', action='store_true')
     parser.add_argument('output', help='Output schematic file (*.sch), it will insert the matrix into it!', nargs='?', type=argparse.FileType('r'), default=sys.stdout )
+    parser.add_argument('-v','--version', action='version', version='%(prog)s '+__version__)
 
     args = parser.parse_args()
-
-    matrix = create_key_matrix(args.numRows,args.numCols, args.xPos, args.yPos, args.title, args.rowLabel, args.colLabel, args.revDiode)
+    matrix = create_key_matrix(args)
 
     #check if output is stdout
     if not args.output == sys.stdout:
@@ -83,12 +87,12 @@ if __name__ == "__main__":
             #loop through lines and coppy to buffer so we can make a backup of the original file later
             buffPath = os.path.dirname(args.output.name)+'\\temp.buf'
             buff = open(buffPath, 'w')
-            print('Creating matrix...')
+            print('Creating {}x{} matrix... in {}'.format(args.numRows, args.numCols,args.output.name))
             #create a little visual representation of the matrix
             for r in range(args.numRows):
                 k = ""
                 for c in range(args.numCols):
-                    k+=chr(254)
+                    k+=chr(254)+" "
                 print(k)
             #write the matrix to the eeschema file
             for line in args.output:

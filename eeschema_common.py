@@ -15,7 +15,7 @@ def createId():
     GUID_SEED += 1
     return guid
 
-def component(type, value, ref, guid, xPos, yPos, mirrorH = False):
+def component(type, value, ref, guid, xPos, yPos, footprint = str(), mirrorH = False):
 
     comp = '$Comp\n'
     comp += 'L {} {}?\n'.format(type, ref)
@@ -23,8 +23,8 @@ def component(type, value, ref, guid, xPos, yPos, mirrorH = False):
     comp += 'P {} {}\n'.format(xPos, yPos)
     comp += 'F 0 "{}?" H {} {} 50  0 000 L CNN\n'.format(ref, xPos+10, yPos+200)
     comp += 'F 1 "{}" H {} {} 50  0 000 C CNN\n'.format(value, xPos, yPos-100)
-    comp += 'F 2 "" H {} {} 50  0 000 C CNN\n'.format(xPos, yPos+200)
-    comp += 'F 3 "" H {} {} 50  0 000 C CNN\n'.format(xPos, yPos+200)
+    comp += 'F 2 "{}" H {} {} 50  1 000 C CNN\n'.format(footprint, xPos, yPos+200)
+    comp += 'F 3 "" H {} {} 50  1 000 C CNN\n'.format(xPos, yPos+200)
     comp += '\t1    {} {}\n'.format(xPos, yPos)
     comp += '\t{}    0    0    -1\n'.format('-1' if mirrorH else '1')
     comp += '$EndComp\n'
