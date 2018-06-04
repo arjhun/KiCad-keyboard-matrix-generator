@@ -4,17 +4,13 @@
 6x10 matrix with diodes pointing at the collumns:
 
 ```sh
-$ create_key_matrix.py -r 6 -c 10 -t "Keyboard matrix" -rl "key_row" -cl "key_col" --revDiode 60key_keyboard.sch
+/home/user/kicad_projects/60key_keyboard/$ create_key_matrix.py -r 6 -c 10 -t "Keyboard matrix" -rl "key_row" -cl "key_col" --revDiode 60key_keyboard.sch
 ```
 ```
 Found a KiCad schematic file!
-Creating matrix...
-■■■■■■■■■■
-■■■■■■■■■■
-■■■■■■■■■■
-■■■■■■■■■■
-■■■■■■■■■■
-■■■■■■■■■■
+Creating 2x10 matrix... in /home/user/kicad_projects/60key_keyboard/60key_keyboard.sch
+■ ■ ■ ■ ■ ■ ■ ■ ■ ■
+■ ■ ■ ■ ■ ■ ■ ■ ■ ■
 Done!
 ```
 
@@ -35,7 +31,8 @@ $ create_key_matrix.py -h
 ```
 ```
 usage: create_key_matrix.py [-h] -r NUMROWS -c NUMCOLS [-x XPOS] [-y YPOS]
-                            [-t TITLE] [-rl ROWLABEL] [-cl COLLABEL] [-rd]
+                            [-t TITLE] [-rl ROWLABEL] [-cl COLLABEL]
+                            [-df DFOOTPRINT] [-sf SFOOTPRINT] [-rd] [-v]
                             [output]
 
 Generate a switch/ diode key matrix in EEschema by Arjen Klaverstijn
@@ -43,7 +40,7 @@ Generate a switch/ diode key matrix in EEschema by Arjen Klaverstijn
 positional arguments:
   output                Output schematic file (*.sch), it will insert the
                         matrix into it! (default: <open file '<stdout>', mode
-                        'w' at 0x01D8C078>)
+                        'w' at 0x01CC5078>)
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -61,5 +58,10 @@ optional arguments:
                         Row label prefix (default: row)
   -cl COLLABEL, --colLabel COLLABEL
                         Row label prefix (default: col)
+  -df DFOOTPRINT, --dFootprint DFOOTPRINT
+                        Diode footprint association (default: )
+  -sf SFOOTPRINT, --sFootprint SFOOTPRINT
+                        Switch footprint association (default: )
   -rd, --revDiode       Reverse diode direction (default: False)
+  -v, --version         show program's version number and exit
   ```
