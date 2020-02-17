@@ -39,7 +39,7 @@ def create_key_matrix(args):
             #place components
             matrix += eeschema.component('Switch:SW_Push', 'SW_Push', 'SW', eeschema.createId(), switchX, posY, args.sFootprint)
             orientMatrix = [-1 if args.revDiode else 1, 0,0,-1]
-            matrix += eeschema.component('Diode:1N4148', '1N4148', 'D', eeschema.createId(), diodeX, posY, args.dFootprint, orientMatrix)
+            matrix += eeschema.component('Device:D', 'D', 'D', eeschema.createId(), diodeX, posY, args.dFootprint, orientMatrix)
             #switch left side wire and junction
             matrix += eeschema.connection(posX, rowLabelY)
             matrix += eeschema.wire(posX,rowLabelY,posX, posY)
