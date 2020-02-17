@@ -11,7 +11,7 @@ import sys
 import os
 import eeschema_common as eeschema
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 
 def create_key_matrix(args):
     #create a hex ecoded string as id
